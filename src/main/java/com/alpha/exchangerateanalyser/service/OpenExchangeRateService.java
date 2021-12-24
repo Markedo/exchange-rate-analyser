@@ -36,9 +36,9 @@ public class OpenExchangeRateService {
         OERExchangeRates yesterdayRates = OERInterface.requestRatesOnDate(date.toString(), OER_id, baseCurrency);
         BigDecimal currentCurrencyRate = currentRates.getRates().get(targetCurrency); //Receive current exchange rate for specified currency
         BigDecimal yesterdayCurrencyRate = yesterdayRates.getRates().get(targetCurrency); //Receive yesterday exchange rate for specified currency
-        log.debug("Target currency is: " + targetCurrency + ", yesterday date is " + date);
-        log.debug("Current rates timestamp is: " + currentRates.getTimestamp() + " , rate: " + currentCurrencyRate.toString());
-        log.debug("Yesterday rates timestamp is: " + yesterdayRates.getTimestamp() +", rate: " + yesterdayCurrencyRate.toString());
+        log.debug("Target currency: " + targetCurrency + ", yesterday date: " + date);
+        log.debug("Current rates: " + currentCurrencyRate.toString() + " timestamp: " + currentRates.getTimestamp());
+        log.debug("Yesterday rate: " + yesterdayCurrencyRate.toString() + " timestamp: " + yesterdayRates.getTimestamp());
         String result;
         switch (currentCurrencyRate.compareTo(yesterdayCurrencyRate)) {
             case -1 -> result = "rich"; //In case ExRate increased
@@ -51,7 +51,8 @@ public class OpenExchangeRateService {
 
     public boolean validateCurrency(String currency) {
         Map<String, String> map = OERInterface.requestCurrenciesList();
-        log.debug(OERInterface.requestCurrenciesList().toString());
-        return OERInterface.requestCurrenciesList().containsKey(currency);
+        boolean result = OERInterface.requestCurrenciesList().containsKey(currency);
+        log.debug("Currency validation result: " + result);
+        return result;
     }
 }

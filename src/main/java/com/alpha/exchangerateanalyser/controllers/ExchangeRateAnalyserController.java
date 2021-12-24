@@ -14,7 +14,6 @@ public class ExchangeRateAnalyserController {
 
     @Autowired
     GiphyService gifController;
-
     @Autowired
     OpenExchangeRateService OERController;
 

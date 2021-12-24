@@ -32,6 +32,8 @@ public class GiphyService {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
         JsonNode result = mapper.readTree(response.getBody()).findPath("embed_url");
-        return result.toString().replaceAll("\"","");
+        String GIFurl = result.toString().replaceAll("\"","");
+        log.debug("Giphy URL: " + GIFurl);
+        return GIFurl;
     }
 }
