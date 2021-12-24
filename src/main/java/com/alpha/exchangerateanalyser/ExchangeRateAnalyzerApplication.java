@@ -1,4 +1,7 @@
 package com.alpha.exchangerateanalyser;
+/*
+This app was originally made by Max "markedo"
+ */
 
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
