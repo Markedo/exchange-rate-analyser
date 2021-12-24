@@ -14,24 +14,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface OpenExchangeRatesInterface {
 
     @GetMapping("/api/latest.json")
-    public ExchangeRatesAnswer requestRates(@RequestParam("app_id") String app_id,
+    ExchangeRatesAnswer requestRates(@RequestParam("app_id") String app_id,
                                             @RequestParam(name="base", required = false) String base);
 
 
     @GetMapping("/api/latest.json") //method with all possible parameters(as of 21.12.2021), not used properly in current version of the app
-    public ExchangeRatesAnswer requestRates(@RequestParam("app_id") String app_id,
+    ExchangeRatesAnswer requestRates(@RequestParam("app_id") String app_id,
                                             @RequestParam(name="base", required = false) String base,
                                             @RequestParam(name="symbols", required = false) String symbols,
                                             @RequestParam(name="prettyprint", required = false) boolean prettyprint,
                                             @RequestParam(name="show_alternative", required = false) boolean show_alternative);
 
     @GetMapping("/api/historical/{date}.json")
-    public ExchangeRatesAnswer requestRatesOnDate(@PathVariable String date,
+    ExchangeRatesAnswer requestRatesOnDate(@PathVariable String date,
                                                   @RequestParam("app_id") String app_id,
                                                   @RequestParam(name="base", required = false) String base);
 
     @GetMapping("/api/historical/{date}.json") //method with all possible parameters(as of 21.12.2021), not used properly in current version of the app
-    public ExchangeRatesAnswer requestRatesOnDate(@PathVariable String date,
+    ExchangeRatesAnswer requestRatesOnDate(@PathVariable String date,
                                                   @RequestParam("app_id") String app_id,
                                                   @RequestParam(name="base", required = false) String base,
                                                   @RequestParam(name="symbols", required = false) String symbols,
@@ -39,12 +39,12 @@ public interface OpenExchangeRatesInterface {
                                                   @RequestParam(name="prettyprint", required = false) boolean prettyprint);
 
     @GetMapping("/api/currencies.json")//this method is not used in current version of the app
-    public Object requestCurrenciesList(@RequestParam(name="prettyprint", required = false) boolean prettyprint,
+    Object requestCurrenciesList(@RequestParam(name="prettyprint", required = false) boolean prettyprint,
                                         @RequestParam(name="show_alternative", required = false) boolean show_alternative,
                                         @RequestParam(name="show_inactive", required = false) boolean show_inactive);
 
     @GetMapping("/api/usage.json")//this method is not used in current version of the app
-    public Object requestUsageStats(@RequestParam("app_id") String app_id,
+    Object requestUsageStats(@RequestParam("app_id") String app_id,
                                     @RequestParam(name="prettyprint", required = false) boolean prettyprint);
 
 }
