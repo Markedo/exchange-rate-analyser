@@ -1,6 +1,6 @@
 package com.alpha.exchangerateanalyser;
 /*
-This app was originally made by Max "markedo"
+This app was originally made by @author Max "markedo"
  */
 
 import org.slf4j.LoggerFactory;

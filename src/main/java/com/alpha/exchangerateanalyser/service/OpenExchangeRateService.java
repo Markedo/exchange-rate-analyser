@@ -1,11 +1,11 @@
-package com.alpha.exchangerateanalyser.controllers;
+package com.alpha.exchangerateanalyser.service;
 
 /*
 This is the controller for Open Exchange Rates Interface
  */
 
 import com.alpha.exchangerateanalyser.intefraces.OpenExchangeRatesInterface;
-import com.alpha.exchangerateanalyser.models.ExchangeRatesAnswer;
+import com.alpha.exchangerateanalyser.models.OERExchangeRates;
 import com.alpha.exchangerateanalyser.view.ExchangeRateAnalyserView;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +14,10 @@ import org.springframework.stereotype.Controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Controller
-public class CurrencyController {
+public class OpenExchangeRateService {
 
     org.slf4j.Logger log = LoggerFactory.getLogger(ExchangeRateAnalyserView.class);
 
@@ -30,8 +31,8 @@ public class CurrencyController {
 
     public String calculateExRatesChange(String targetCurrency) {
         LocalDate date = LocalDate.now().minusDays(1); //Determine with which day to compare, currently settled as tomorrow
-        ExchangeRatesAnswer currentRates = OERInterface.requestRates(OER_id, baseCurrency);
-        ExchangeRatesAnswer yesterdayRates = OERInterface.requestRatesOnDate(date.toString(), OER_id, baseCurrency);
+        OERExchangeRates currentRates = OERInterface.requestRates(OER_id, baseCurrency);
+        OERExchangeRates yesterdayRates = OERInterface.requestRatesOnDate(date.toString(), OER_id, baseCurrency);
         BigDecimal currentCurrencyRate = currentRates.getRates().get(targetCurrency); //Receive current exchange rate for specified currency
         BigDecimal yesterdayCurrencyRate = yesterdayRates.getRates().get(targetCurrency); //Receive yesterday exchange rate for specified currency
         log.debug("Target currency is: " + targetCurrency + ", yesterday date is " + date);
@@ -45,5 +46,11 @@ public class CurrencyController {
             default -> result = "error"; //In other case
         }
         return result;
+    }
+
+    public boolean validateCurrency(String currency) {
+        Map<String, String> map = OERInterface.requestCurrenciesList();
+        log.debug(OERInterface.requestCurrenciesList().toString());
+        return OERInterface.requestCurrenciesList().containsKey(currency);
     }
 }
