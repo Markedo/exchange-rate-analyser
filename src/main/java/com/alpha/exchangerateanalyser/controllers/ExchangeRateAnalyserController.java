@@ -1,4 +1,7 @@
 package com.alpha.exchangerateanalyser.controllers;
+/*
+This class handle requests from {@Link com.alpha.exchangerateanalyser.view.ExchangeRateAnalyserView.Class}
+ */
 
 import com.alpha.exchangerateanalyser.service.GiphyService;
 import com.alpha.exchangerateanalyser.service.OpenExchangeRateService;
