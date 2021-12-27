@@ -4,12 +4,14 @@ This class receives commands from the user and returns answers
  */
 import com.alpha.exchangerateanalyser.controllers.ExchangeRateAnalyserController;
 import com.alpha.exchangerateanalyser.intefraces.OpenExchangeRatesInterface;
+import com.alpha.exchangerateanalyser.models.ExchangeRatesStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableFeignClients(basePackageClasses = OpenExchangeRatesInterface.class)
 public class ExchangeRateAnalyserView {
+
+    private final static String PAGE_TITLE = "<title>Exchange Rate Analyser</title>"; //title of the page
+    private final static String GET_RATES_PATH = "/api/v1/rates"; //mapping for main functional that compares currencies exchange rates
+    private final static String CURRENCY_PARAM = "currency"; //the name of the parameter that specify currency to compare
+    private final static String APP_CHECK_PATH = "/api/v1/check"; //mapping for optional method that check app availability
+
     org.slf4j.Logger log = LoggerFactory.getLogger(ExchangeRateAnalyserView.class);
 
     @Autowired
@@ -28,34 +36,40 @@ public class ExchangeRateAnalyserView {
 
     Since the use of 3rd party libraries is restricted, response forms in HTML code.
     */
-    @GetMapping("/api/ratesgif")
-    ResponseEntity<String> getRates(@RequestParam("currency") String currency) throws JsonProcessingException { //Target currency provided by query param "currency"
+    @GetMapping(GET_RATES_PATH)
+    ResponseEntity<String> getRates(@RequestParam(CURRENCY_PARAM) String currency) throws JsonProcessingException { //Target currency provided by query param "currency"
         log.debug(Thread.currentThread().getStackTrace()[1].getMethodName() + " method requested");
-        ResponseEntity response = new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        ResponseEntity response;
         if(ERcontroller.validateCurrency(currency)) {
-            String result = ERcontroller.getExRateComparisonResult(currency); //Contains result of Exchange Rates compare
-            String gifURL = ERcontroller.getExRateGIF(result); //Contains URL to GIF
+            ExchangeRatesStatus result = ERcontroller.getExRateComparisonResult(currency); //Contains result of exchange rates comparison
+            String gifURL = ERcontroller.getExRateGIF(result.toString()); //Contains URL of GIF
             response = ResponseEntity.ok() //Forms HTML page with results
                     .body(
-                    "<title>Exchange Rate Analyser</title>" //Set title for a response page
+                    PAGE_TITLE
                     + "Your result is: " + result + "<br>"
                     + "<br><div style=\"width:50%;height:0;padding-bottom:50%;position:relative;\"><iframe src=\""
                     + gifURL + "\" width=\"50%\" height=\"50%\" style=\"position:absolute\" frameBorder=\"0\"class=\"giphy-embed\" allowFullScreen>"
             );
         }
         else {
-            response = ResponseEntity.badRequest().body( //Forms HTML page if currency is not valid
-                    "<title>Exchange Rate Analyser: ERROR</title>"
-                    + "Invalid currency");
+            response = ResponseEntity.badRequest().body(PAGE_TITLE + "Currency invalid or missing."); //Forms HTML page if currency is not valid
         }
         return response;
     }
+
     /*
     This method is to check that app itself is still working. May be useful in case of any problems with 3rd party services
      */
-    @GetMapping("/api/check")
+    @GetMapping(APP_CHECK_PATH)
     ResponseEntity<String> appCheck() {
         log.debug(Thread.currentThread().getStackTrace()[1].getMethodName() + " method requested");
-        return ResponseEntity.ok("The app is still working. If you have any issues, please check availability of 3rd party services.");
+        return ResponseEntity.ok(PAGE_TITLE + "Seems like app works fine. If you have any issues, please check availability of 3rd party services.");
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)  //This method handle requests without params
+    public ResponseEntity<String> missingParams(MissingServletRequestParameterException ex) {
+        String missingParam = ex.getParameterName();
+        log.debug("Request without obligatory param \""+ missingParam +"\" received");
+        return ResponseEntity.badRequest().body(PAGE_TITLE + "Request parameter is missing. Please specify \"" + missingParam + "\" parameter.");
     }
 }

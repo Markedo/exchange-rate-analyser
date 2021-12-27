@@ -3,6 +3,7 @@ package com.alpha.exchangerateanalyser.controllers;
 This class handle requests from {@Link com.alpha.exchangerateanalyser.view.ExchangeRateAnalyserView.Class}
  */
 
+import com.alpha.exchangerateanalyser.models.ExchangeRatesStatus;
 import com.alpha.exchangerateanalyser.service.GiphyService;
 import com.alpha.exchangerateanalyser.service.OpenExchangeRateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +18,7 @@ public class ExchangeRateAnalyserController {
     @Autowired
     OpenExchangeRateService OERController;
 
-    public String getExRateComparisonResult(String currency) {
+    public ExchangeRatesStatus getExRateComparisonResult(String currency) {
         return OERController.calculateExRatesChange(currency);
     }
 

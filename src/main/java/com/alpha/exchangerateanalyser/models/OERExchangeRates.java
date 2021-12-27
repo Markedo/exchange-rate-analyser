@@ -3,7 +3,7 @@ package com.alpha.exchangerateanalyser.models;
 This class is required to process responses containing exchange rates from the Open Exchange Rates service through API as of 21.12.2021
 */
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.HashMap;
 
 public class OERExchangeRates {
 
@@ -11,7 +11,7 @@ public class OERExchangeRates {
     private String license;
     private Integer timestamp;
     private String base;
-    private Map<String, BigDecimal> rates;
+    private HashMap<String, BigDecimal> rates;
 
     public OERExchangeRates() {
     }
@@ -32,7 +32,7 @@ public class OERExchangeRates {
         return base;
     }
 
-    public Map<String, BigDecimal> getRates() {
+    public HashMap<String, BigDecimal> getRates() {
         return rates;
     }
 
