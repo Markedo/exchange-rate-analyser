@@ -3,13 +3,12 @@ package com.alpha.exchangerateanalyser.service;
 This is the controller for Open Exchange Rates Interface
  */
 
-import com.alpha.exchangerateanalyser.intefraces.OpenExchangeRatesInterface;
+import com.alpha.exchangerateanalyser.intefraces.OpenExchangeRatesInterfImpl;
 import com.alpha.exchangerateanalyser.models.ExchangeRatesStatus;
 import com.alpha.exchangerateanalyser.models.OERExchangeRates;
 import com.alpha.exchangerateanalyser.view.ExchangeRateAnalyserView;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,18 +19,13 @@ public class OpenExchangeRateService {
 
     org.slf4j.Logger log = LoggerFactory.getLogger(ExchangeRateAnalyserView.class);
 
-    @Value("${OpenExchangeRateID}")
-    private String OER_id; //API ID for Open Exchange Rates 3rd party service
-    @Value("${OpenExchangeRateBASE}")
-    private String baseCurrency; //Base currency to compare with
-
     @Autowired
-    private OpenExchangeRatesInterface OERInterface;
+    private OpenExchangeRatesInterfImpl OERInterfaceImpl;
 
     public ExchangeRatesStatus calculateExRatesChange(String targetCurrency) { //calculate change of the exchange rate since yesterday
         LocalDate date = LocalDate.now().minusDays(1); //Determine with which day to compare, currently settled as tomorrow(now minus one day)
-        OERExchangeRates currentRates = OERInterface.requestRates(OER_id, baseCurrency);
-        OERExchangeRates yesterdayRates = OERInterface.requestRatesOnDate(date.toString(), OER_id, baseCurrency);
+        OERExchangeRates currentRates = OERInterfaceImpl.requestRates();
+        OERExchangeRates yesterdayRates = OERInterfaceImpl.requestRatesOnDate(date.toString());
         BigDecimal currentCurrencyRate = currentRates.getRates().get(targetCurrency); //Receive current exchange rate for specified currency
         BigDecimal yesterdayCurrencyRate = yesterdayRates.getRates().get(targetCurrency); //Receive yesterday exchange rate for specified currency
         log.debug("Target currency: " + targetCurrency + ", yesterday date: " + date);
@@ -48,7 +42,7 @@ public class OpenExchangeRateService {
     }
 
     public boolean validateCurrency(String currency) { //validate provided currency
-        boolean result = OERInterface.requestCurrenciesList().containsKey(currency);
+        boolean result = OERInterfaceImpl.requestCurrenciesList().containsKey(currency);
         log.debug("Currency validation result: " + result);
         return result;
     }

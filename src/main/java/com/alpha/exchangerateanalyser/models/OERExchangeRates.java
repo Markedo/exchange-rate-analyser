@@ -16,6 +16,14 @@ public class OERExchangeRates {
     public OERExchangeRates() {
     }
 
+    public OERExchangeRates(String disclaimer, String license, Integer timestamp, String base, HashMap<String, BigDecimal> rates) {
+        this.disclaimer = disclaimer;
+        this.license = license;
+        this.timestamp = timestamp;
+        this.base = base;
+        this.rates = rates;
+    }
+
     public String getDisclaimer() {
         return disclaimer;
     }
