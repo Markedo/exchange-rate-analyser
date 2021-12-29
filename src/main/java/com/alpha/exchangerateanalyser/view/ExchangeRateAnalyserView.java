@@ -23,7 +23,7 @@ public class ExchangeRateAnalyserView {
     private final static String PAGE_TITLE = "<title>Exchange Rate Analyser</title>"; //title of the page
     private final static String GET_RATES_PATH = "/api/v1/rates"; //mapping for main functional that compares currencies exchange rates
     private final static String CURRENCY_PARAM = "currency"; //the name of the parameter that specify currency to compare
-    private final static String APP_CHECK_PATH = "/api/v1/check"; //mapping for optional method that check app availability
+        private final static String APP_CHECK_PATH = "/api/v1/check"; //mapping for optional method that check app availability
 
     org.slf4j.Logger log = LoggerFactory.getLogger(ExchangeRateAnalyserView.class);
 
